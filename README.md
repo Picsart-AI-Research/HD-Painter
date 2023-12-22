@@ -1,9 +1,9 @@
 # HD-Painter
 
-This repository is the official implementation of [HD-Painter](https://arxiv.org).
+This repository is the official implementation of [HD-Painter](https://arxiv.org/abs/2312.14091).
 
 
-**[HD-Painter: High-Resolution and Prompt-Faithful Text-Guided Image Inpainting with Diffusion Models](https://arxiv.org)**
+**[HD-Painter: High-Resolution and Prompt-Faithful Text-Guided Image Inpainting with Diffusion Models](https://arxiv.org/abs/2312.14091)**
 </br>
 Hayk Manukyan,
 Andranik Sargsyan,
@@ -13,7 +13,7 @@ Shant Navasardyan,
 [Humphrey Shi](https://www.humphreyshi.com)
 </br>
 
-[Paper](https://arxiv.org/) | [Video](https://www.dropbox.com/scl/fi/t4lnssa9wbkd3bqo9kzgs/HDPainterTeaserVideoV4.mov?rlkey=vuk2zwm4z4pngt73cdmpmumpv&dl=0)
+[Paper](https://arxiv.org/abs/2312.14091) | [Video](https://www.dropbox.com/scl/fi/t4lnssa9wbkd3bqo9kzgs/HDPainterTeaserVideoV4.mov?rlkey=vuk2zwm4z4pngt73cdmpmumpv&dl=0)
 
 
 <p align="center">

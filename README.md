@@ -65,3 +65,15 @@ Will be released soon!
   <td align="center"><img src="__assets__/github/results/results/3.jpg"></td>
 </tr>
 </table>
+
+
+## BibTeX
+If you use our work in your research, please cite our publication:
+```
+@article{manukyan2023hd,
+  title={HD-Painter: High-Resolution and Prompt-Faithful Text-Guided Image Inpainting with Diffusion Models},
+  author={Manukyan, Hayk and Sargsyan, Andranik and Atanyan, Barsegh and Wang, Zhangyang and Navasardyan, Shant and Shi, Humphrey},
+  journal={arXiv preprint arXiv:2312.14091},
+  year={2023}
+}
+```

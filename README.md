@@ -13,7 +13,7 @@ Shant Navasardyan,
 [Humphrey Shi](https://www.humphreyshi.com)
 </br>
 
-[Paper](https://arxiv.org/abs/2312.14091) | [Video](https://www.dropbox.com/scl/fi/t4lnssa9wbkd3bqo9kzgs/HDPainterTeaserVideoV4.mov?rlkey=vuk2zwm4z4pngt73cdmpmumpv&dl=0)
+[Paper](https://arxiv.org/abs/2312.14091) | [Video](https://www.dropbox.com/scl/fi/t4lnssa9wbkd3bqo9kzgs/HDPainterTeaserVideoV4.mov?rlkey=vuk2zwm4z4pngt73cdmpmumpv&dl=0) | [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/PAIR/HD-Painter)
 
 
 <p align="center">

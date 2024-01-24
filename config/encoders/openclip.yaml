@@ -1,0 +1,4 @@
+__class__: smplfusion.models.encoders.open_clip_embedder.FrozenOpenCLIPEmbedder
+__init__:
+  freeze: True
+  layer: "penultimate"

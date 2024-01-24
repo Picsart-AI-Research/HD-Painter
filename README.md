@@ -25,9 +25,82 @@ Moreover, our approach allows extension to larger scales by introducing a specia
 </em>
 </p>
 
-## Code
-Will be released soon!
+## Setup
 
+To set up the environment, install requirements using Python 3.9
+
+```
+python3 -m venv venv
+source ./venv/bin/activate
+pip install pip --upgrade
+pip install -r requirements.txt
+```
+
+If you would like to also perform metric evaluation, additionally install `mmcv` by running:
+
+```
+pip install mmcv==2.1.0 -f https://download.openmmlab.com/mmcv/dist/cu118/torch2.1/index.html
+```
+
+## Usage
+
+You can use the following script to perform inference on the given image+mask pair and prompt:
+```
+python hd_inpaint.py \
+  --model-id ONE_OF[sd2_inp, ds8_inp, sd15_inp] \
+  --method ONE_OF[baseline, painta, rasg, painta+rasg] \
+  --image-path HR_IMAGE_PATH \
+  --mask-path HR_IMAGE_MASK \
+  --prompt PROMPT_TXT \
+  --output-dir OUTPUT_DIRECTORY
+```
+`--model-id` specifies the baseline model for text-guided image inpainting. The following baseline models are supported by the script:
+- `sd2_inp` - Stable Diffusion 2.0 Inpainting
+- `ds8_inp` - DreamShaper 8 Inpainting
+- `sd15_inp` - Stable Diffusion 1.5 Inpainting
+
+If not specified `--model-id` defaults to `sd2_inp`.
+
+` --method` specifies the inpainting method. The available options are as such:
+- `baseline` - Run the underlying baseline model.
+- `painta` - Use PAIntA block as introduced in the paper.
+- `rasg` - Use RASG guidance mechanism as introduced in the paper.
+- `painta+rasg` - Use both PAIntA and RASG mechanisms.
+ 
+If not specified `--method` defaults to `painta+rasg`.
+
+The script uses combination of positive and negative text prompts by default for visually more pleasing results.
+
+The script will automatically download the necessary models during first run, please be patient. Output will be saved in the `--output-dir` directory. Please note that the provided script outputs an image which longer side is equal to 2048px while the aspect ratio is preserved. You can see more options and details in `hd_inpaint.py` script.
+
+## Gradio Demo
+
+From the project root folder, run this shell command:
+```
+python demo/app.py
+```
+
+Then access the app [locally](http://127.0.0.1:7860) with a browser.
+Please be patient: during first run models will be being automatically downloaded, which can take several minutes.
+
+## Evaluation
+
+From the root repository directory run the following commands to download and unzip MSCOCO validation images and annotations:
+```
+mkdir mscoco_data
+cd mscoco_data
+wget http://images.cocodataset.org/zips/val2017.zip
+unzip val2017.zip
+wget http://images.cocodataset.org/annotations/annotations_trainval2017.zip
+unzip annotations_trainval2017.zip
+cd ..
+```
+
+Then, use the following evaluation command for calculating the metrics of our method on MSCOCO validation set:
+```
+python metrics/eval.py --model-id sd2_inp --mscoco-dir ./mscoco_data --method painta+rasg
+```
+Change the `--method` if you want to perform an ablation study. You can enable the default negative/positive prompt usage with `--neg-pos-prompts` option. Please see `metrics/eval.py` script for details and more options.
 
 ## Method
 

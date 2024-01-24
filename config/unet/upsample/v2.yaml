@@ -1,0 +1,19 @@
+__class__: smplfusion.models.unet.UNetModel
+__init__:
+  use_checkpoint: False
+  num_classes: 1000  # timesteps for noise conditioning (here constant, just need one)
+  image_size: 128
+  in_channels: 7
+  out_channels: 4
+  model_channels: 256
+  attention_resolutions: [ 2,4,8]
+  num_res_blocks: 2
+  channel_mult: [ 1, 2, 2, 4]
+  disable_self_attentions: [True, True, True, False]
+  disable_middle_self_attn: False
+  num_heads: 8
+  use_spatial_transformer: True
+  transformer_depth: 1
+  context_dim: 1024
+  legacy: False
+  use_linear_in_transformer: True

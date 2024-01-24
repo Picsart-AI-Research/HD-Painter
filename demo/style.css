@@ -1,0 +1,37 @@
+/* Extra small devices (phones, 768px and down) */
+@media only screen and (max-width: 768px) {
+    #inputmask {
+        height: 400px !important;
+    }
+}
+
+/* Small devices (portrait tablets and large phones, 768px and up) */
+@media only screen and (min-width: 768px) {
+
+}
+
+/* Medium devices (landscape tablets, 992px and up) */
+@media only screen and (min-width: 992px) {
+    #inputmask {
+        height: 300px !important;
+    }
+}
+
+/* Large devices (laptops/desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+    #inputmask {
+        height: 400px !important;
+    }
+}
+
+/* Extra large devices (large laptops and desktops, 1400px and up) */
+@media only screen and (min-width: 1400px) {
+    #inputmask {
+        height: 400px !important;
+    }
+}
+
+#examples table td:nth-child(2),
+#examples table th:nth-child(2) {
+  display: none!important;
+}

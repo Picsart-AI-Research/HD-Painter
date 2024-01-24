@@ -1,0 +1,15 @@
+__class__: smplfusion.models.unet.UNetModel
+__init__:
+  image_size: 32 # unused
+  in_channels: 9  # 4 data + 4 downscaled image + 1 mask
+  out_channels: 4
+  model_channels: 320
+  attention_resolutions: [ 4, 2, 1 ]
+  num_res_blocks: 2
+  channel_mult: [ 1, 2, 4, 4 ]
+  num_heads: 8
+  use_spatial_transformer: True
+  transformer_depth: 1
+  context_dim: 768
+  use_checkpoint: False
+  legacy: False

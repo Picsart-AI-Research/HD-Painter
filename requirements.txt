@@ -1,0 +1,24 @@
+--extra-index-url https://download.pytorch.org/whl/cu118
+
+einops==0.7.0
+gradio==3.47.1
+mmdet==3.3.0
+numpy==1.24.1
+omegaconf==2.3.0
+open-clip-torch==2.23.0
+opencv-python==4.7.*
+openmim==0.3.9
+mmengine==0.10.2
+openai-clip==1.0.1
+pandas==2.1.4
+Pillow==9.4.0
+pytorch-lightning==2.1.2
+PyYAML==6.0.1
+safetensors==0.3.2
+scipy==1.10.0
+segment-anything @ git+https://github.com/facebookresearch/segment-anything.git@6fdee8f2727f4506cfbbe553e23b895e27956588
+torch==2.1.1
+torchvision==0.16.1
+tqdm==4.66.1
+transformers==4.28.0
+xformers==0.0.23

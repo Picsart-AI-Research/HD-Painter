@@ -1,0 +1,10 @@
+.DS_Store
+
+.gradio/
+__pycache__/
+outputs/
+venv/
+
+gradio_tmp/
+mscoco_data/
+checkpoints/

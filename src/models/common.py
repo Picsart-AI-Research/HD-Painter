@@ -1,5 +1,6 @@
 import importlib
 import requests
+from collections import OrderedDict
 from pathlib import Path
 from os.path import dirname
 
@@ -10,6 +11,12 @@ from omegaconf import OmegaConf
 from tqdm import tqdm
 
 from src.smplfusion import DDIM, share, scheduler
+from src.utils.convert_diffusers_to_sd import (
+    convert_vae_state_dict,
+    convert_unet_state_dict,
+    convert_text_enc_state_dict,
+    convert_text_enc_state_dict_v20
+)
 
 
 PROJECT_DIR = dirname(dirname(dirname(__file__)))
@@ -54,25 +61,56 @@ def load_obj(path):
     return get_obj_from_str(objyaml['__class__'])(**objyaml.get("__init__", {}))
 
 
-def load_sd_inpainting_model(
-    download_url,
-    model_path,
-    sd_version,
-    dtype=torch.float16,
-    device='cuda:0'
-):
-    model_path = f'{MODEL_FOLDER}/{model_path}'
-
-    download_file(download_url, model_path)
-    
+def load_state_dict(model_path):
     model_ext = Path(model_path).suffix
-    
     if model_ext == '.safetensors':
         state_dict = safetensors.torch.load_file(model_path)
     elif model_ext == '.ckpt':
         state_dict = torch.load(model_path)['state_dict']
+    elif model_ext == '.bin':
+        state_dict = torch.load(model_path)
     else:
         raise Exception(f'Unsupported model extension {model_ext}')
+    return state_dict
+
+
+def load_sd_inpainting_model(
+    download_url,
+    model_path,
+    sd_version,
+    diffusers_ckpt=False,
+    dtype=torch.float16,
+    device='cuda:0'
+):
+    if type(download_url) == str and type(model_path) == str:
+        model_path = f'{MODEL_FOLDER}/{model_path}'
+        download_file(download_url, model_path)
+        state_dict = load_state_dict(model_path)
+        if diffusers_ckpt:
+            raise Exception('Not implemented')
+        extract = lambda state_dict, model: {x[len(model)+1:]:y for x,y in state_dict.items() if model in x}
+        unet_state = extract(state_dict, 'model.diffusion_model')
+        encoder_state = extract(state_dict, 'cond_stage_model')
+        vae_state = extract(state_dict, 'first_stage_model')
+    elif type(download_url) == OrderedDict and type(model_path) == OrderedDict:
+        for key in download_url.keys():
+            download_file(download_url[key], f'{MODEL_FOLDER}/{model_path[key]}')
+        unet_state = load_state_dict(f'{MODEL_FOLDER}/{model_path["unet"]}')
+        encoder_state = load_state_dict(f'{MODEL_FOLDER}/{model_path["encoder"]}')
+        vae_state = load_state_dict(f'{MODEL_FOLDER}/{model_path["vae"]}')
+        if diffusers_ckpt:
+            unet_state = convert_unet_state_dict(unet_state)
+            is_v20_model = "text_model.encoder.layers.22.layer_norm2.bias" in encoder_state
+            if is_v20_model:
+                encoder_state  = {"transformer." + k: v for k, v in encoder_state .items()}
+                encoder_state  = convert_text_enc_state_dict_v20(encoder_state)
+                encoder_state  = {"model." + k: v for k, v in encoder_state .items()}
+            else:
+                encoder_state  = convert_text_enc_state_dict(encoder_state)
+                encoder_state  = {"transformer." + k: v for k, v in encoder_state .items()}
+            vae_state = convert_vae_state_dict(vae_state)
+    else:
+        raise Exception('download_url or model_path definition type is not supported')
 
     # Load common config files
     config = OmegaConf.load(f'{CONFIG_FOLDER}/ddpm/v1.yaml')
@@ -90,13 +128,8 @@ def load_sd_inpainting_model(
     
     ddim = DDIM(config, vae, encoder, unet)
 
-    extract = lambda state_dict, model: {x[len(model)+1:]:y for x,y in state_dict.items() if model in x}
-    unet_state = extract(state_dict, 'model.diffusion_model')
-    encoder_state = extract(state_dict, 'cond_stage_model')
-    vae_state = extract(state_dict, 'first_stage_model')
-
     unet.load_state_dict(unet_state)
-    encoder.load_state_dict(encoder_state)
+    encoder.load_state_dict(encoder_state, strict=False)
     vae.load_state_dict(vae_state)
 
     if dtype == torch.float16:

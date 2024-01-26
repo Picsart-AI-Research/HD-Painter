@@ -50,16 +50,26 @@ def get_args():
         help='Seed to use for generation.', required=False)
     parser.add_argument('--neg-pos-prompts', action='store_true',
         help='Use negative and positive prompts for generation.')
+    parser.add_argument('--continue-eval', action='store_true',
+        help='Continue evaluation.')
     return parser.parse_args()
 
 
 class Metrics:
-    def __init__(self):
-        self.clipscore_sum = 0.0
-        self.accuracy_sum = 0.0
-        self.aesthetic_sum = 0.0
-        self.pickscore_sum = 0.0
-        self.num_samples = 0.0
+    def __init__(self, init_metrics_path=None):
+        if init_metrics_path is not None:
+            df = pd.read_csv(init_metrics_path)
+            self.clipscore_sum = np.sum(df['clipscore'])
+            self.accuracy_sum = np.sum(df['accuracy'])
+            self.aesthetic_sum = np.sum(df['aesthetic'])
+            self.pickscore_sum = np.sum(df['pickscore'])
+            self.num_samples = len(df)
+        else:
+            self.clipscore_sum = 0.0
+            self.accuracy_sum = 0.0
+            self.aesthetic_sum = 0.0
+            self.pickscore_sum = 0.0
+            self.num_samples = 0.0
 
     def update(self, image, mask, prompt, inpainted_image):
         metrics = {}
@@ -127,14 +137,15 @@ def get_inpainting_function(
 def get_save_outputs_function(
     output_dir: Path,
     save_preprocessed_image_mask: bool = False,
-    log_metrics: bool = True
+    log_metrics: bool = True,
+    continue_eval: bool = False
 ):
     output_dir.mkdir(exist_ok=True, parents=True)
     images_dir = output_dir / 'images'
     masks_dir = output_dir / 'masks'
     results_dir = output_dir / 'results'
     log_csv_path = output_dir / 'metrics.csv'
-    if os.path.exists(log_csv_path):
+    if os.path.exists(log_csv_path) and not continue_eval:
         os.remove(log_csv_path)
 
     if save_preprocessed_image_mask:
@@ -179,7 +190,7 @@ def main():
     mscoco_test_ds = MSCOCOSubset(
         subset_csv_path=args.mscoco_test_csv, mscoco_ds=mscoco_ds, verbose=True)
 
-    metrics = Metrics()
+    metrics = Metrics(init_metrics_path = args.output_dir / 'metrics.csv' if args.continue_eval else None)
     
     run_inpainting = get_inpainting_function(
         model_id=args.model_id,
@@ -189,9 +200,11 @@ def main():
         negative_prompt=negative_prompt if args.neg_pos_prompts else '',
         positive_prompt=positive_prompt if args.neg_pos_prompts else ''
     )
-    save_outputs = get_save_outputs_function(output_dir=args.output_dir)
+    save_outputs = get_save_outputs_function(output_dir=args.output_dir, continue_eval=args.continue_eval)
 
     for idx, (image_name, image, mask, prompt) in tqdm(list(enumerate(mscoco_test_ds))):
+        if idx < metrics.num_samples:
+            continue
         image = resize(image, 512)
         mask = resize(mask, 512)
 

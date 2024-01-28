@@ -6,9 +6,17 @@ from .common import MODEL_FOLDER, load_sd_inpainting_model, download_file
 model_dict = {
     'sd15_inp': {
         'sd_version': 1,
-        'diffusers_ckpt': False,
-        'model_path': 'sd-1-5-inpainting/sd-v1-5-inpainting.ckpt',
-        'download_url': 'https://huggingface.co/runwayml/stable-diffusion-inpainting/resolve/main/sd-v1-5-inpainting.ckpt?download=true'
+        'diffusers_ckpt': True,
+        'model_path': OrderedDict([
+            ('unet', 'sd-1-5-inpainting/unet.fp16.safetensors'),
+            ('encoder', 'sd-1-5-inpainting/encoder.fp16.safetensors'),
+            ('vae', 'sd-1-5-inpainting/vae.fp16.safetensors')
+        ]),
+        'download_url': OrderedDict([
+            ('unet', 'https://huggingface.co/runwayml/stable-diffusion-inpainting/resolve/main/unet/diffusion_pytorch_model.fp16.safetensors?download=true'),
+            ('encoder', 'https://huggingface.co/runwayml/stable-diffusion-inpainting/resolve/main/text_encoder/model.fp16.safetensors?download=true'),
+            ('vae', 'https://huggingface.co/runwayml/stable-diffusion-inpainting/resolve/main/vae/diffusion_pytorch_model.fp16.safetensors?download=true')
+        ])
     },
     'ds8_inp': {
         'sd_version': 1,

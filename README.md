@@ -5,8 +5,8 @@ This repository is the official implementation of [HD-Painter](https://arxiv.org
 
 **[HD-Painter: High-Resolution and Prompt-Faithful Text-Guided Image Inpainting with Diffusion Models](https://arxiv.org/abs/2312.14091)**
 </br>
-Hayk Manukyan,
-Andranik Sargsyan,
+Hayk Manukyan*,
+Andranik Sargsyan*,
 Barsegh Atanyan,
 [Zhangyang Wang](https://www.ece.utexas.edu/people/faculty/atlas-wang),
 Shant Navasardyan,
@@ -47,7 +47,7 @@ pip install mmcv==2.1.0 -f https://download.openmmlab.com/mmcv/dist/cu118/torch2
 You can use the following script to perform inference on the given image+mask pair and prompt:
 ```
 python hd_inpaint.py \
-  --model-id ONE_OF[sd2_inp, ds8_inp, sd15_inp] \
+  --model-id ONE_OF[ds8_inp, sd2_inp, sd15_inp] \
   --method ONE_OF[baseline, painta, rasg, painta+rasg] \
   --image-path HR_IMAGE_PATH \
   --mask-path HR_IMAGE_MASK \
@@ -55,11 +55,11 @@ python hd_inpaint.py \
   --output-dir OUTPUT_DIRECTORY
 ```
 `--model-id` specifies the baseline model for text-guided image inpainting. The following baseline models are supported by the script:
-- `sd2_inp` - Stable Diffusion 2.0 Inpainting
 - `ds8_inp` - DreamShaper 8 Inpainting
+- `sd2_inp` - Stable Diffusion 2.0 Inpainting
 - `sd15_inp` - Stable Diffusion 1.5 Inpainting
 
-If not specified `--model-id` defaults to `sd2_inp`.
+If not specified `--model-id` defaults to `ds8_inp`.
 
 ` --method` specifies the inpainting method. The available options are as such:
 - `baseline` - Run the underlying baseline model.
@@ -98,9 +98,9 @@ cd ..
 
 Then, use the following evaluation command for calculating the metrics of our method on MSCOCO validation set:
 ```
-python metrics/eval.py --model-id sd2_inp --mscoco-dir ./mscoco_data --method painta+rasg
+python metrics/eval.py --model-id ds8_inp --mscoco-dir ./mscoco_data --method painta+rasg
 ```
-Change the `--method` if you want to perform an ablation study. You can enable the default negative/positive prompt usage with `--neg-pos-prompts` option. Please see `metrics/eval.py` script for details and more options.
+Change the `--method` if you want to perform an ablation study. You will need to save the `png` results of our method using `--save-png` option in above command, and then use `--pickscore-base-results-dir` option pointing to the saved png results directory of our method when evaluating other methods. Please see `metrics/eval.py` script for details and more options.
 
 ## Method
 
@@ -136,6 +136,11 @@ Change the `--method` if you want to perform an ablation study. You can enable t
   <td width=5% align="center" style="font-size: 120%">"leather couch"</td>
   <td align="center"><img src="__assets__/github/results/masked/3.jpg" raw=true></td>
   <td align="center"><img src="__assets__/github/results/results/3.jpg"></td>
+</tr>
+<tr>
+  <td width=5% align="center" style="font-size: 120%">"boots"</td>
+  <td align="center"><img src="__assets__/github/results/masked/6.jpg" raw=true></td>
+  <td align="center"><img src="__assets__/github/results/results/6.jpg"></td>
 </tr>
 </table>
 

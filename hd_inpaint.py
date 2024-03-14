@@ -26,8 +26,8 @@ def get_args():
     parser.add_argument('--output-dir', type=Path, help='Output dir.', required=True)
     parser.add_argument('--num-samples', type=int, help='Num of samples', default=1)
 
-    parser.add_argument('--model-id', type=str, default='sd2_inp',
-        help='One of [sd2_inp, sd15_inp, ds8_inp]', required=False)
+    parser.add_argument('--model-id', type=str, default='ds8_inp',
+        help='One of [ds8_inp, sd2_inp, sd15_inp]', required=False)
     parser.add_argument('--method', type=str, default='painta+rasg',
         help='One of [baseline, painta, rasg, painta+rasg]', required=False)
     parser.add_argument('--sr-method', type=str,
